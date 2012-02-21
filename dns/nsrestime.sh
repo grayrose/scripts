@@ -16,6 +16,11 @@ function getnsip() {
 	dig +short a $ns
 }
 
+function getnsas() {
+	local nsip="$1"
+	whois -h whois.cymru.com $nsip | tail -1 | awk '{print "AS" $1}'
+}
+
 function nstime() {
 	local domain="$1"
 	local nsip="$2"
@@ -38,6 +43,7 @@ echo "-- Domain: $domain"
 for ns in $(getns $domain)
 do
 	nsip=$(getnsip $ns)
-	echo -n "$ns ($nsip) "
+	nsas=$(getnsas $nsip)
+	echo -n "$ns ($nsip:$nsas) "
 	nstime $domain $nsip
 done
